@@ -1,0 +1,26 @@
+Package: PlateletCancerClassifier
+Title: Platelet RNA-based Cancer Detection and Classification
+Version: 0.1.0
+Authors@R: 
+    person(given = "YourFirstName",
+           family  = "YourLastName",
+           role = c("aut", "cre"),
+           email = "your@email.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: An R package providing trained machine learning models for cancer detection (healthy vs cancer) and cancer type classification (Breast, CRC, GBM, Hepatobiliary, Lung, Pancreas) using blood platelet RNA-seq data from GSE68086.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends: 
+    R (>= 3.6.0)
+Imports: 
+    randomForest,
+    xgboost,
+    dplyr
+Suggests: 
+    knitr,
+    rmarkdown,
+    ggplot2
+VignetteBuilder: knitr
