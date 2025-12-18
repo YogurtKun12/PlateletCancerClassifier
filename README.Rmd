@@ -1,9 +1,78 @@
 ---
 title: "PlateletCancerClassifier"
 author: "Xiaokun.Xi"
-date: "2025-12-16"
+date: "`r Sys.Date()`"
 output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE, warning = FALSE, message = FALSE)
+```
+##Package Overview
+PlateletCancerClassifier is an R package that implements cancer detection and classification using platelet RNA-seq data (GSE68086).
+
+Binary classification: Healthy vs Cancer (random forest model)
+Multiclass classification: 6 cancer types (Breast, CRC, GBM, Hepatobiliary, Lung, Pancreas) (XGBoost model)
+
+The package provides two easy-to-use prediction functions with automatic feature validation.
+
+## Installation
+```{r installation, eval=FALSE}
+# Install remotes if not already installed
+install.packages("remotes")
+
+# Install from GitHub
+remotes::install_github("YogurtKun12/PlateletCancerClassifier")
+```
+## Important: Placing Model Files (Required)
+The package does not include the trained model files (due to size). After installation, you must manually place them:
+
+```{r place-models, eval=FALSE}
+# In your training environment
+saveRDS(rf_optimal, "rf_binary_model.rds")                    # Binary model
+xgb_model$save_model("xgb_multiclass_model.json")             # Multiclass model (new xgboost format)
+
+# Place the files in the package's extdata directory
+system.file("extdata", package = "PlateletCancerClassifier")
+```
+## Usage Demonstration
+```{r usage, eval=FALSE}
+library(PlateletCancerClassifier)
+
+# Input data: data.frame with rows = samples, columns = gene expression (column names must be ENSG IDs)
+
+# Binary classification: healthy vs cancer
+status <- predict_cancer_status(your_new_data)
+print(status)  # Returns "healthy" or "cancer"
+
+# Multiclass classification: specific cancer type (recommended for cancer-positive samples only)
+cancer_type <- predict_cancer_type(cancer_positive_data)
+print(cancer_type)  # Returns "Breast", "Lung", etc.
+```
+##Model Performance Report (Test Set)
+Overall Accuracy (Multiclass): 0.622
+```{r performance-table, echo=FALSE, eval=TRUE}
+library(knitr)
+
+perf <- data.frame(
+  `Cancer Type` = c("Breast", "CRC", "GBM", "Hepatobiliary", "Lung", "Pancreas"),
+  Sensitivity = c(0.267, 0.563, 0.688, 0.600, 0.792, 0.714),
+  Specificity = c(0.947, 0.865, 0.986, 0.953, 0.879, 0.908),
+  `Balanced Accuracy` = c(0.607, 0.714, 0.837, 0.776, 0.835, 0.811),
+  AUROC = c(0.830, 0.700, 0.924, 0.722, 0.847, 0.860),
+  AUPRC = c(0.366, 0.398, 0.889, 0.285, 0.680, 0.708)
+)
+
+kable(perf, digits = 3, caption = "Performance metrics for each cancer type on the test set")
+```
+Interpretation:
+
+GBM and Lung show the best performance
+Breast has lower sensitivity but very high specificity
+The binary model shows excellent discrimination (high AUC)
+
+##Data Source and Citation
+Data are from GSE68086. If used in research, please cite the original paper:
+Best MG, et al. (2015). RNA-Seq of Tumor-Educated Platelets Enables Blood-Based Pan-Cancer, Multiclass, and Molecular Pathway Cancer Diagnostics. Cancer Cell.
+##License
+MIT License
