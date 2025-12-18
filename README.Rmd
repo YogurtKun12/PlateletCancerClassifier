@@ -29,8 +29,10 @@ The package does not include the trained model files (due to size). After instal
 
 ```{r place-models, eval=FALSE}
 # In your training environment
+rf_optimal <- readRDS(file.path(getwd(), "inst", "extdata", "rf_binary_model.rds"))
 saveRDS(rf_optimal, "rf_binary_model.rds")                    # Binary model
-xgb_model$save_model("xgb_multiclass_model.rds")             # Multiclass model (new xgboost format)
+xgb_model <- readRDS(file.path(getwd(), "inst", "extdata", "xgb_multiclass_model.rds"))
+saveRDS(xgb_model,"xgb_multiclass_model.rds")             # Multiclass model (new xgboost format)
 
 # Place the files in the package's extdata directory
 system.file("extdata", package = "PlateletCancerClassifier")
